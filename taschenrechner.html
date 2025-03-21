@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Taschenrechner</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(to right, #ffff99, #006400), 
+                  radial-gradient(circle, rgba(255, 255, 255, 0.3) 10%, transparent 20%) 50% 50%;
+      background-size: 200% 200%;
+      background-position: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: background-color 0.5s ease, color 0.5s ease;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: white;
+      margin-bottom: 20px;
+    }
+
+    .calculator-container {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      transition: transform 0.5s ease; 
+    }
+
+    .calculator {
+      display: grid;
+      grid-template-columns: repeat(5, 100px);
+      grid-template-rows: repeat(6, 100px);
+      grid-gap: 10px;
+      justify-content: center;
+      background-color: rgba(0, 0, 0, 0.6); 
+      padding: 20px;
+      border-radius: 15px;
+    }
+
+    .calculator input {
+      grid-column: span 5;
+      padding: 20px;
+      font-size: 36px;
+      text-align: right;
+      border: none;
+      background-color: #222;
+      color: white;
+      border-radius: 10px;
+    }
+
+    .calculator button {
+      padding: 20px;
+      font-size: 24px;
+      cursor: pointer;
+      border-radius: 5px;
+      background-color: #444;
+      color: white;
+      transition: background-color 0.3s ease;
+    }
+
+    .calculator button:hover {
+      background-color: #555;
+    }
+
+    .calculator button:active {
+      background-color: #666;
+    }
+
+    .calculator button:focus {
+      outline: none;
+    }
+
+    .result-history {
+      background-color: rgba(0, 0, 0, 0.6);
+      color: white;
+      margin-left: 20px;
+      padding: 10px;
+      border-radius: 10px;
+      width: 200px;
+      height: 300px;
+      overflow-y: auto;
+    }
+
+    .result-history h2 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+
+    .result-history ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .result-history li {
+      margin: 5px 0;
+      font-size: 18px;
+    }
+
+    .clear-history {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #444;
+      color: white;
+      cursor: pointer;
+      border-radius: 5px;
+      border: none;
+      transition: background-color 0.3s ease;
+    }
+
+    .clear-history:hover {
+      background-color: #555;
+    }
+
+    @media (max-width: 600px) {
+      .calculator {
+        grid-template-columns: repeat(4, 80px);
+        grid-template-rows: repeat(7, 80px);
+      }
+
+      .result-history {
+        width: 180px;
+        height: 250px;
+      }
+
+      .calculator input {
+        font-size: 28px;
+      }
+
+      .calculator-container {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+
+    .mode-buttons {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 10;
+    }
+
+    .mode-button {
+      padding: 10px;
+      background-color: rgba(0, 0, 0, 0.6);
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    .mode-button:hover {
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+
+    /* Styling für den Text "made by Jonas Groß" */
+    .footer-text {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      font-family: 'Brush Script MT', cursive;
+      font-size: 24px;
+      color: white;
+      letter-spacing: 1px;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div>
+    <h1>Taschenrechner</h1>
+    <div class="mode-buttons">
+      <button class="mode-button" onclick="toggleDarkMode()">Dark Mode</button>
+      <button class="mode-button" onclick="toggleMobileMode()">Mobile Modus</button>
+    </div>
+
+    <div class="calculator-container">
+      <div class="calculator">
+        <input type="text" id="display" disabled>
+
+        <!-- Taschenrechner-Tasten -->
+        <button onclick="appendToDisplay('1')">1</button>
+        <button onclick="appendToDisplay('2')">2</button>
+        <button onclick="appendToDisplay('3')">3</button>
+        <button onclick="appendToDisplay('+')">+</button>
+        <button onclick="appendToDisplay('Math.sqrt(')">√</button>
+
+        <button onclick="appendToDisplay('4')">4</button>
+        <button onclick="appendToDisplay('5')">5</button>
+        <button onclick="appendToDisplay('6')">6</button>
+        <button onclick="appendToDisplay('-')">-</button>
+        <button onclick="appendToDisplay('Math.sin(')">sin</button>
+
+        <button onclick="appendToDisplay('7')">7</button>
+        <button onclick="appendToDisplay('8')">8</button>
+        <button onclick="appendToDisplay('9')">9</button>
+        <button onclick="appendToDisplay('*')">*</button>
+        <button onclick="appendToDisplay('Math.cos(')">cos</button>
+
+        <button onclick="appendToDisplay('0')">0</button>
+        <button onclick="clearDisplay()">C</button>
+        <button onclick="calculateResult()">=</button>
+        <button onclick="appendToDisplay('/')">/</button>
+        <button onclick="appendToDisplay('Math.tan(')">tan</button>
+
+        <!-- Zusätzliche wissenschaftliche Funktionen -->
+        <button onclick="appendToDisplay('Math.PI')">π</button>
+        <button onclick="appendToDisplay('Math.E')">e</button>
+        <button onclick="appendToDisplay('Math.pow(')">^</button>
+        <button onclick="appendToDisplay('Math.log(')">log</button>
+        <button onclick="appendToDisplay('Math.exp(')">exp</button>
+
+        <button onclick="appendToDisplay('Math.abs(')">|x|</button>
+        <button onclick="appendToDisplay('Math.random()')">rand</button>
+      </div>
+
+      <div class="result-history">
+        <h2>Ergebnisverlauf</h2>
+        <ul id="historyList">
+          <!-- Historie wird hier angezeigt -->
+        </ul>
+        <button class="clear-history" onclick="clearHistory()">Verlauf löschen</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- "made by Jonas Groß" in der unteren linken Ecke -->
+  <div class="footer-text">made by Jonas Groß</div>
+
+  <script>
+    let history = JSON.parse(localStorage.getItem('history')) || [];
+
+    updateHistory();
+
+    function appendToDisplay(value) {
+      document.getElementById('display').value += value;
+    }
+
+    function clearDisplay() {
+      document.getElementById('display').value = '';
+    }
+
+    function calculateResult() {
+      try {
+        let expression = document.getElementById('display').value;
+
+        // Sicherstellen, dass die Berechnung richtig erfolgt, indem eval statt Function genutzt wird
+        let result = eval(expression); 
+
+        document.getElementById('display').value = result;
+
+        // Historie speichern
+        history.push(`${expression} = ${result}`);
+        if (history.length > 5) history.shift();
+        localStorage.setItem('history', JSON.stringify(history));
+        updateHistory();
+      } catch (e) {
+        document.getElementById('display').value = 'Fehler';
+      }
+    }
+
+    function updateHistory() {
+      let historyList = document.getElementById('historyList');
+      historyList.innerHTML = '';
+      history.slice(-5).reverse().forEach(entry => {
+        let li = document.createElement('li');
+        li.textContent = entry;
+        historyList.appendChild(li);
+      });
+    }
+
+    function clearHistory() {
+      history = [];
+      localStorage.removeItem('history');
+      updateHistory();
+    }
+
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+      if (document.body.classList.contains('dark-mode')) {
+        document.body.style.background = 'linear-gradient(to right, #333, #222)';
+        document.body.style.color = 'white';
+      } else {
+        document.body.style.background = 'linear-gradient(to right, #ffff99, #006400)';
+        document.body.style.color = 'black';
+      }
+    }
+
+    function toggleMobileMode() {
+      const isMobile = window.innerWidth <= 600;
+      if (!isMobile) {
+        document.body.style.transform = 'scale(0.6)';
+        document.body.style.transformOrigin = 'top center';
+      } else {
+        document.body.style.transform = 'none';
+      }
+    }
+  </script>
+
+</body>
+</html>
