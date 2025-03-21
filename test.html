@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Taschenrechner mit Star Wars + EDM Design</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      height: 100vh;
+      /* Star Wars Hintergrundbild mit EDM Farbverlauf */
+      background: linear-gradient(135deg, rgba(255, 0, 0, 0.5), rgba(0, 0, 255, 0.5)),
+                  url('https://wallpapers.com/images/hd/star-wars-pictures-ao2nnirknwtnvw30.jpg') center center/cover no-repeat;
+      background-size: cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: white;
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.7); /* EDM Style Glow */
+    }
+
+    .calculator-container {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .calculator {
+      display: grid;
+      grid-template-columns: repeat(5, 100px);
+      grid-template-rows: repeat(6, 100px);
+      grid-gap: 10px;
+      justify-content: center;
+      background-color: rgba(0, 0, 0, 0.7); /* Transparent für modernen Look */
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.8); /* EDM Neon Effekt */
+      border: 3px solid #ffcc00;
+    }
+
+    .calculator input {
+      grid-column: span 5;
+      padding: 20px;
+      font-size: 36px;
+      text-align: right;
+      border: none;
+      background-color: #222;
+      color: white;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.8); /* Glow Effekt für Eingabefeld */
+    }
+
+    .calculator button {
+      padding: 20px;
+      font-size: 24px;
+      cursor: pointer;
+      border-radius: 5px;
+      background-color: #444;
+      color: white;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .calculator button:hover {
+      background-color: #555;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+    }
+
+    .calculator button:active {
+      background-color: #666;
+    }
+
+    .calculator button:focus {
+      outline: none;
+    }
+
+    /* Styling für den Ergebnisverlauf */
+    .result-history {
+      background-color: rgba(0, 0, 0, 0.6);
+      color: white;
+      margin-left: 20px;
+      padding: 10px;
+      border-radius: 10px;
+      width: 200px;
+      height: 300px;
+      overflow-y: auto;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.8); /* Glow Effekt */
+    }
+
+    .result-history h2 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+
+    .result-history ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .result-history li {
+      margin: 5px 0;
+      font-size: 18px;
+    }
+
+    /* Text in der linken unteren Ecke */
+    .footer-text {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      font-size: 18px;
+      font-family: 'Brush Script MT', cursive;
+      color: white;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.7); /* Glühen-Effekt */
+    }
+
+  </style>
+</head>
+<body>
+
+  <div>
+    <h1>Taschenrechner - Star Wars + EDM Edition</h1>
+    <div class="calculator-container">
+      <div class="calculator">
+        <input type="text" id="display" disabled>
+
+        <!-- Wissenschaftliche Tasten -->
+        <button onclick="appendToDisplay('1')">1</button>
+        <button onclick="appendToDisplay('2')">2</button>
+        <button onclick="appendToDisplay('3')">3</button>
+        <button onclick="appendToDisplay('+')">+</button>
+        <button onclick="appendToDisplay('Math.sqrt(')">√</button>
+
+        <button onclick="appendToDisplay('4')">4</button>
+        <button onclick="appendToDisplay('5')">5</button>
+        <button onclick="appendToDisplay('6')">6</button>
+        <button onclick="appendToDisplay('-')">-</button>
+        <button onclick="appendToDisplay('Math.sin(')">sin</button>
+
+        <button onclick="appendToDisplay('7')">7</button>
+        <button onclick="appendToDisplay('8')">8</button>
+        <button onclick="appendToDisplay('9')">9</button>
+        <button onclick="appendToDisplay('*')">*</button>
+        <button onclick="appendToDisplay('Math.cos(')">cos</button>
+
+        <button onclick="appendToDisplay('0')">0</button>
+        <button onclick="clearDisplay()">C</button>
+        <button onclick="calculateResult()">=</button>
+        <button onclick="appendToDisplay('/')">/</button>
+        <button onclick="appendToDisplay('Math.tan(')">tan</button>
+
+        <!-- Zusätzliche wissenschaftliche Funktionen -->
+        <button onclick="appendToDisplay('Math.PI')">π</button>
+        <button onclick="appendToDisplay('Math.E')">e</button>
+        <button onclick="appendToDisplay('Math.pow(')">^</button>
+        <button onclick="appendToDisplay('Math.log(')">log</button>
+        <button onclick="appendToDisplay('Math.exp(')">exp</button>
+
+        <button onclick="appendToDisplay('Math.abs(')">|x|</button>
+        <button onclick="appendToDisplay('Math.random()')">rand</button>
+      </div>
+
+      <!-- Ergebnisverlauf auf der rechten Seite -->
+      <div class="result-history">
+        <h2>Ergebnisverlauf</h2>
+        <ul id="historyList">
+          <!-- Historie wird hier angezeigt -->
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-text">Made by Jonas Groß</div>
+
+  <script>
+    // Speichert die Berechnungen in einem Array
+    let history = [];
+
+    function appendToDisplay(value) {
+      document.getElementById('display').value += value;
+    }
+
+    function clearDisplay() {
+      document.getElementById('display').value = '';
+    }
+
+    function calculateResult() {
+      try {
+        let expression = document.getElementById('display').value;
+        let result = Function('return ' + expression)(); // Safer alternative to eval
+        document.getElementById('display').value = result;
+        
+        // Speichern des Ergebnisses im Verlauf
+        history.push(`${expression} = ${result}`);
+        updateHistory();
+      } catch (e) {
+        document.getElementById('display').value = 'Fehler';
+      }
+    }
+
+    function updateHistory() {
+      // Aktualisiert die Liste der vergangenen Berechnungen
+      let historyList = document.getElementById('historyList');
+      historyList.innerHTML = ''; // Leert die aktuelle Liste
+      history.slice(-5).reverse().forEach(entry => { // Zeigt nur die letzten 5 Einträge
+        let li = document.createElement('li');
+        li.textContent = entry;
+        historyList.appendChild(li);
+      });
+    }
+  </script>
+
+</body>
+</html>
